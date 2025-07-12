@@ -12,8 +12,8 @@ export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSen
 
     useEffect(() => {
         const data = {
-            name: 'User Name',
-            email: 'username@gmail.com'
+            name: 'Kauan',
+            email: 'KauanName@gmail.com'
         };
         setUser(data);
     }, []);
