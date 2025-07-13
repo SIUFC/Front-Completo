@@ -30,7 +30,7 @@ const Login = ({ onNavigateToCadastro, onNavigateToNivel }) => {
 
   try {
     const response = await axios.post(
-      'http://localhost:5000/Login/login',
+      'http://localhost:5037/Login/login',
       {
         Email: email,
         Password: senha, 

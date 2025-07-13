@@ -23,7 +23,7 @@ export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSen
                 console.log('userId:', userId);
                 console.log('token:', token);
                 const response = await axios.get(
-                    `http://localhost:5000/api/User/${userId}`,
+                    `http://localhost:5037/api/User/${userId}`,
                     {
                         headers: {
                             'Authorization': `Bearer ${token}`
