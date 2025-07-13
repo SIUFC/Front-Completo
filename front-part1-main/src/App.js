@@ -64,6 +64,7 @@ function App() {
             onNavigateToAlterarSenha={navigateToAlterarSenha}
             onNavigateToRelatorio={navigateToRelatorio}
             onNavigateBack={() => setCurrentScreen('fase')}
+             onNavigateToLogin={navigateToLogin}
           />
         );
 

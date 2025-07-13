@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Perfil.css';
 
-export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSenha, onNavigateToRelatorio, onNavigateBack }) {
+export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSenha, onNavigateToRelatorio, onNavigateBack,onNavigateToLogin  }) {
 
     const [user, setUser] = useState({
         name: '',
@@ -44,6 +44,17 @@ export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSen
         fetchUser();
     }, []);
 
+       const handleLogout = () => {
+        // Limpa os dados do usuário do navegador
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+
+        // Chama a função que te leva direto para a tela de login
+        if (onNavigateToLogin) {
+            onNavigateToLogin();
+        }
+    };
+
     const goToChangeName = () => onNavigateToAlterarNome && onNavigateToAlterarNome();
     const goToChangePassword = () => onNavigateToAlterarSenha && onNavigateToAlterarSenha();
     const goToReport = () => onNavigateToRelatorio && onNavigateToRelatorio();
@@ -78,7 +89,7 @@ export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSen
                             <button onClick={goToChangeName}>Alterar nome</button>
                             <button onClick={goToChangePassword}>Alterar senha</button>
                             <button onClick={goToReport}>Relatório</button>
-                            <button>Sair</button>
+                            <button onClick={handleLogout}>Sair</button>
                         </div>
                     </>
                 )}
