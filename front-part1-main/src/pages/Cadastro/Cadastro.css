@@ -114,3 +114,54 @@
 .cadastro-button:hover {
   background-color: #319d09;
 }
+
+.notification {
+  position: fixed; 
+  top: 20px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 1000; 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  
+
+  animation: fadeInDown 0.5s, fadeOutUp 0.5s 3.5s;
+  animation-fill-mode: forwards; 
+}
+
+
+.notification.success {
+  background-color: #4CAF50; 
+}
+
+
+.notification.error {
+  background-color: #f44336; 
+}
+
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes fadeOutUp {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+}

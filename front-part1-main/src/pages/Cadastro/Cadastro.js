@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 import './Cadastro.css';
@@ -13,42 +13,76 @@ const Cadastro = ({ onNavigateToLogin }) => {
   const [passwordShown, setPasswordShown] = useState(false);
   const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
 
+     
+  const [notification, setNotification] = useState({ message: '', type: '' });
   
-const handleSubmit = async (event) => {
-    
-    event.preventDefault(); 
+  const notificationTimer = useRef(null);
 
-    // validação dos campos
-    if (password !== confirmPassword) {
-      alert('As senhas não coincidem!');
+  // Função para mostrar a notificação do cadastro
+  const showNotification = (message, type) => {
+    
+    clearTimeout(notificationTimer.current);
+    
+    setNotification({ message, type });
+
+    notificationTimer.current = setTimeout(() => {
+      setNotification({ message: '', type: '' });
+    }, 4000);
+  };
+
+  
+  useEffect(() => {
+    return () => {
+      clearTimeout(notificationTimer.current);
+    };
+  }, []);
+  
+    const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    
+    if (!name || !email || !password || !confirmPassword) {
+      showNotification('Por favor, preencha todos os campos.', 'error'); // CORRIGIDO
       return;
     }
 
-    // objeto com os dados para a API
+    if (password !== confirmPassword) {
+      showNotification('As senhas não coincidem!', 'error'); // CORRIGIDO
+      return;
+    }
+
     const userData = {
       name: name,
       email: email,
       password: password,
-      role: "2" // Role fixa - Usuario
+      role: "2"
     };
 
-    
     try {
-      // requisição POST com axios
       await axios.post('http://localhost:5037/api/User', userData);
       
-      alert('Cadastro realizado com sucesso!');
-      onNavigateToLogin(); // Volta para a tela de login
+      showNotification('Cadastro realizado com sucesso!', 'success'); 
+      
+      
+      setTimeout(() => {
+        onNavigateToLogin();
+      }, 2000); 
 
     } catch (error) {
-      // Se der erro, exibe um alerta e loga no console
       console.error('Erro ao cadastrar:', error);
-      alert('Ocorreu um erro ao realizar o cadastro.');
+      const errorMessage = error.response?.data?.message || 'Ocorreu um erro ao realizar o cadastro.';
+      showNotification(errorMessage, 'error'); 
     }
 };
 
    return (
     <div className="cadastro-container">
+       {/* RENDERIZAÇÃO CONDICIONAL DA NOTIFICAÇÃO */}
+      {notification.message && (
+        <div className={`notification ${notification.type}`}>
+          {notification.message}
+        </div>
+      )}
       <header className="cadastro-header">
         <button onClick={onNavigateToLogin} className="back-button">
           <FaArrowLeft /> Voltar
