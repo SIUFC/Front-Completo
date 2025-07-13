@@ -4,6 +4,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { IoPersonCircleOutline } from 'react-icons/io5';
 import './Login.css';
 import logo from './obi-simulator-logo.png';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = ({ onNavigateToCadastro, onNavigateToNivel }) => {
   const [email, setEmail] = useState('');
@@ -29,23 +30,25 @@ const Login = ({ onNavigateToCadastro, onNavigateToNivel }) => {
 
   try {
     const response = await axios.post(
-  'http://localhost:5037/Login/login',
-  {
-    Email: email,
-    Password: senha, 
-  },
-  {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }
-);
-
-
-    console.log('Login bem-sucedido:', response.data);
+      'http://localhost:5000/Login/login',
+      {
+        Email: email,
+        Password: senha, 
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     const { token } = response.data;
     localStorage.setItem('authToken', token);
+
+    // Decodifica o token para pegar o id do usuário
+    const decoded = jwtDecode(token);
+    const userId = decoded.nameid || decoded.id || decoded.sub; 
+    localStorage.setItem('userId', userId);
 
     onNavigateToNivel();
   } catch (err) {

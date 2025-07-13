@@ -1,24 +1,49 @@
 // pages/Profile.jsx
 
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './Perfil.css';
 
 export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSenha, onNavigateToRelatorio, onNavigateBack }) {
 
     const [user, setUser] = useState({
-        name: 'User Name',
-        email: 'username@gmail.com'
+        name: '',
+        email: ''
     });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        const data = {
-            name: 'Kauan',
-            email: 'KauanName@gmail.com'
+        const fetchUser = async () => {
+            setLoading(true);
+            setError('');
+            try {
+                const userId = localStorage.getItem('userId');
+                const token = localStorage.getItem('authToken');
+                console.log('userId:', userId);
+                console.log('token:', token);
+                const response = await axios.get(
+                    `http://localhost:5000/api/User/${userId}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+                setUser({
+                    name: response.data.name,
+                    email: response.data.email
+                });
+            } catch (err) {
+                console.error(err); // Veja o erro completo no console
+                setError('Erro ao buscar usuário');
+            } finally {
+                setLoading(false);
+            }
         };
-        setUser(data);
+        fetchUser();
     }, []);
 
-    // Funções de navegação usando props
     const goToChangeName = () => onNavigateToAlterarNome && onNavigateToAlterarNome();
     const goToChangePassword = () => onNavigateToAlterarSenha && onNavigateToAlterarSenha();
     const goToReport = () => onNavigateToRelatorio && onNavigateToRelatorio();
@@ -40,17 +65,23 @@ export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSen
                 <div className="titulo">PERFIL</div>
             </div>
             
-            {/* Main content */}
             <div className="container">
-                <div className="nome">{user.name}</div>
-                <div className="email">{user.email}</div>
-
-                <div className="botoes">
-                    <button onClick={goToChangeName}>Alterar nome</button>
-                    <button onClick={goToChangePassword}>Alterar senha</button>
-                    <button onClick={goToReport}>Relatório</button>
-                    <button>Sair</button>
-                </div>
+                {loading ? (
+                    <div>Carregando...</div>
+                ) : error ? (
+                    <div className="mensagem-erro">{error}</div>
+                ) : (
+                    <>
+                        <div className="nome">{user.name}</div>
+                        <div className="email">{user.email}</div>
+                        <div className="botoes">
+                            <button onClick={goToChangeName}>Alterar nome</button>
+                            <button onClick={goToChangePassword}>Alterar senha</button>
+                            <button onClick={goToReport}>Relatório</button>
+                            <button>Sair</button>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
