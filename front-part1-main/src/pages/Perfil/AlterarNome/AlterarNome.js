@@ -1,21 +1,64 @@
 // pages/AlterarNome.jsx
 
-import React, { useState } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import './AlterarNome.css';
+import axios from 'axios';
 
 export default function AlterarNome({ onNavigateBack }) {
     const [newName, setNewName] = useState('');
     const [error, setError] = useState('');
+    const [notification, setNotification] = useState({ message: '', type: '' });
+    const notificationTimer = useRef(null);
 
-    const handleConfirm = () => {
+    const showNotification = (message, type) => {
+        clearTimeout(notificationTimer.current);
+        setNotification({ message, type });
+        notificationTimer.current = setTimeout(() => {
+            setNotification({ message: '', type: '' });
+        }, 4000);
+    };
+   
+    useEffect(() => {
+        return () => clearTimeout(notificationTimer.current);
+    }, []);
+
+    const handleConfirm = async () => {
         if (!newName.trim()) {
             setError('PREENCHA O CAMPO DE NOME');
             return;
         }
         setError('');
-        console.log(`Nome alterado para: ${newName}`);
-        alert("Nome alterado com sucesso! (Simulação)");
-        if (onNavigateBack) onNavigateBack();
+
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('authToken');
+
+        if (!userId || !token) {
+            showNotification('Erro de autenticação. Faça login novamente.', 'error');
+            return;
+        }
+
+        const url = `http://localhost:5037/api/User/${userId}/name`;
+        const payload = { name: newName };
+
+        try {
+            
+            await axios.put(url, payload, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            showNotification('Nome alterado com sucesso!', 'success');
+            
+            
+            setTimeout(() => {
+                if (onNavigateBack) onNavigateBack();
+            }, 2000);
+
+        } catch (err) {
+            console.error('Erro ao alterar nome:', err);
+            showNotification('Não foi possível alterar o nome.', 'error');
+        }
     };
 
     const handleBack = () => {
@@ -24,6 +67,13 @@ export default function AlterarNome({ onNavigateBack }) {
 
     return (
         <div className="body-alterar-nome">
+
+             
+            {notification.message && (
+                <div className={`notification ${notification.type}`}>
+                    {notification.message}
+                </div>
+            )}
             
             <div className="header-superior-an">
                 <div className="voltar-an" onClick={handleBack}>&lt;&lt; Voltar</div>
