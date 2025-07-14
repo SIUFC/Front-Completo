@@ -3,6 +3,7 @@
 import React, { useState,useEffect, useRef } from 'react';
 import './AlterarNome.css';
 import axios from 'axios';
+import { FaArrowLeft } from 'react-icons/fa';
 
 export default function AlterarNome({ onNavigateBack }) {
     const [newName, setNewName] = useState('');
@@ -29,6 +30,7 @@ export default function AlterarNome({ onNavigateBack }) {
         }
         setError('');
 
+        // Pega o ID e o Token do localStorage
         const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('authToken');
 
@@ -76,11 +78,13 @@ export default function AlterarNome({ onNavigateBack }) {
             )}
             
             <div className="header-superior-an">
-                <div className="voltar-an" onClick={handleBack}>&lt;&lt; Voltar</div>
-                <div className="config-an">
-                    <svg viewBox="0 0 24 24"><path d="M19.43..."></path></svg>
-                </div>
+                <button className="voltar-an" onClick={handleBack}>
+                            <FaArrowLeft /> Voltar
+                           </button>
             </div>
+
+            
+
             <div className="titulo-container-an">
                 <div className="titulo-an">ALTERAR NOME</div>
             </div>

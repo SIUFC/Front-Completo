@@ -15,7 +15,7 @@
 
 
 .header-superior {
-    background-color: #1e1f36;
+    background-color: #25263A;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -32,10 +32,17 @@
 
 
 .voltar {
-    color: #319d09;
-    font-size: 18px;
-    cursor: pointer;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem; 
+  gap: 8px;
 }
+
+
 
 .titulo {
     color: #1e1f36;
@@ -108,5 +115,5 @@
 }
 
 .botoes button:hover {
-    background-color: #28a400;
+    background-color: #319d09;
 }

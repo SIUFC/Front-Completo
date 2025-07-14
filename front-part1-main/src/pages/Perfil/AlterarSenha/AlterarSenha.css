@@ -2,7 +2,7 @@
 
 
 .body-alterar-senha {
-    background-color: #1e1f36;
+    background-color: #25263A;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -19,13 +19,21 @@
 }
 
 .voltar-as {
-    color: #31c500;
-    font-size: 18px;
-    cursor: pointer;
+  background: none;
+  border: none;
+  color: rgb(255, 255, 255);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem 0;
+  font-size: 1.2rem;
 }
 
+
 .config-as {
-    color: #31c500;
+    color: #319d09;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -39,7 +47,7 @@
 }
 
 .titulo-container-as {
-    background-color: #31c500;
+    background-color: #319d09;
     padding: 10px;
     width: 100%;
     text-align: center;
@@ -106,7 +114,7 @@
 
 
 .botao-confirmar-as {
-    background-color: #31c500;
+    background-color: #319d09;
     color: white;
     border: none;
     padding: 15px;
@@ -120,7 +128,7 @@
 }
 
 .botao-confirmar-as:hover {
-    background-color: #28a400;
+    background-color: #319d09;
 }
 
 

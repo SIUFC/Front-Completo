@@ -1,7 +1,7 @@
 /* pages/Relatorio.css */
 
 .body-relatorio {
-    background-color: #1e1f36;
+    background-color: #25263A;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -18,13 +18,20 @@
 }
 
 .voltar-r {
-    color: #31c500;
+ background: none;
+    border: none;
+    color: white; 
     font-size: 18px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.voltar-r svg {
+  margin-right: 8px; 
 }
 
 .config-r {
-    color: #31c500;
+    color: #319d09;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -38,7 +45,7 @@
 }
 
 .titulo-container-r {
-    background-color: #31c500;
+    background-color: #319d09;
     padding: 10px;
     width: 100%;
     text-align: center;
