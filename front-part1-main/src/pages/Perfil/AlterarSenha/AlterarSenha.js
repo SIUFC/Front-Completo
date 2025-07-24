@@ -1,7 +1,10 @@
+// pages/AlterarSenha.jsx
+
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import './AlterarSenha.css';
 import { FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom'; 
+import './AlterarSenha.css';
 
 const EyeIcon = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -9,7 +12,6 @@ const EyeIcon = () => (
         <circle cx="12" cy="12" r="3"></circle>
     </svg>
 );
-
 const EyeSlashIcon = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
@@ -18,14 +20,14 @@ const EyeSlashIcon = () => (
 );
 
 
-export default function AlterarSenha({ onNavigateBack }) {
+export default function AlterarSenha() {
+    const navigate = useNavigate(); 
+
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState({});
-
-    
     const [notification, setNotification] = useState({ message: '', type: '' });
     const notificationTimer = useRef(null);
 
@@ -75,7 +77,7 @@ export default function AlterarSenha({ onNavigateBack }) {
             showNotification('Senha alterada com sucesso!', 'success');
             
             setTimeout(() => {
-                if (onNavigateBack) onNavigateBack();
+                navigate('/perfil');
             }, 2000);
 
         } catch (err) {
@@ -84,8 +86,9 @@ export default function AlterarSenha({ onNavigateBack }) {
         }
     };
 
+    
     const handleBack = () => {
-        if (onNavigateBack) onNavigateBack();
+        navigate('/perfil');
     };
 
     return (
@@ -96,11 +99,11 @@ export default function AlterarSenha({ onNavigateBack }) {
                 </div>
             )}
 
-            <div className="header-superior-an">
-           <button className="voltar-an" onClick={handleBack}>
-            <FaArrowLeft /> Voltar
-           </button>
-           </div>
+            <div className="header-superior-as">
+                <button className="voltar-as" onClick={handleBack}>
+                    <FaArrowLeft /> Voltar
+                </button>
+            </div>
             <div className="titulo-container-as">
                 <div className="titulo-as">ALTERAR SENHA</div>
             </div>

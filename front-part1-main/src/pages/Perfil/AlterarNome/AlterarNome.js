@@ -1,11 +1,14 @@
 // pages/AlterarNome.jsx
 
-import React, { useState,useEffect, useRef } from 'react';
-import './AlterarNome.css';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom'; 
+import './AlterarNome.css';
 
-export default function AlterarNome({ onNavigateBack }) {
+export default function AlterarNome() {
+    const navigate = useNavigate();
+
     const [newName, setNewName] = useState('');
     const [error, setError] = useState('');
     const [notification, setNotification] = useState({ message: '', type: '' });
@@ -30,7 +33,6 @@ export default function AlterarNome({ onNavigateBack }) {
         }
         setError('');
 
-        // Pega o ID e o Token do localStorage
         const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('authToken');
 
@@ -43,7 +45,6 @@ export default function AlterarNome({ onNavigateBack }) {
         const payload = { name: newName };
 
         try {
-            
             await axios.put(url, payload, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -52,9 +53,8 @@ export default function AlterarNome({ onNavigateBack }) {
 
             showNotification('Nome alterado com sucesso!', 'success');
             
-            
             setTimeout(() => {
-                if (onNavigateBack) onNavigateBack();
+                navigate('/perfil'); 
             }, 2000);
 
         } catch (err) {
@@ -64,13 +64,11 @@ export default function AlterarNome({ onNavigateBack }) {
     };
 
     const handleBack = () => {
-        if (onNavigateBack) onNavigateBack();
+        navigate('/perfil');
     };
 
     return (
         <div className="body-alterar-nome">
-
-             
             {notification.message && (
                 <div className={`notification ${notification.type}`}>
                     {notification.message}
@@ -79,11 +77,9 @@ export default function AlterarNome({ onNavigateBack }) {
             
             <div className="header-superior-an">
                 <button className="voltar-an" onClick={handleBack}>
-                            <FaArrowLeft /> Voltar
-                           </button>
+                    <FaArrowLeft /> Voltar
+                </button>
             </div>
-
-            
 
             <div className="titulo-container-an">
                 <div className="titulo-an">ALTERAR NOME</div>
@@ -100,7 +96,6 @@ export default function AlterarNome({ onNavigateBack }) {
                         value={newName}
                         onChange={(e) => setNewName(e.target.value)}
                     />
-                    
                     {error && <p className="mensagem-erro">{error}</p>}
                 </div>
 

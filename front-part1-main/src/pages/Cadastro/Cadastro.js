@@ -1,53 +1,47 @@
-import React, { useState, useEffect, useRef} from 'react';
-import { FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
+
+
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom'; 
 import './Cadastro.css';
 
-const Cadastro = ({ onNavigateToLogin }) => {
+
+const Cadastro = () => {
+  const navigate = useNavigate(); 
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
   const [passwordShown, setPasswordShown] = useState(false);
   const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
-
-     
   const [notification, setNotification] = useState({ message: '', type: '' });
-  
   const notificationTimer = useRef(null);
 
-  // Função para mostrar a notificação do cadastro
   const showNotification = (message, type) => {
-    
     clearTimeout(notificationTimer.current);
-    
     setNotification({ message, type });
-
     notificationTimer.current = setTimeout(() => {
       setNotification({ message: '', type: '' });
     }, 4000);
   };
 
-  
   useEffect(() => {
     return () => {
       clearTimeout(notificationTimer.current);
     };
   }, []);
-  
-    const handleSubmit = async (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    
     if (!name || !email || !password || !confirmPassword) {
-      showNotification('Por favor, preencha todos os campos.', 'error'); // CORRIGIDO
+      showNotification('Por favor, preencha todos os campos.', 'error');
       return;
     }
-
     if (password !== confirmPassword) {
-      showNotification('As senhas não coincidem!', 'error'); // CORRIGIDO
+      showNotification('As senhas não coincidem!', 'error');
       return;
     }
 
@@ -60,31 +54,28 @@ const Cadastro = ({ onNavigateToLogin }) => {
 
     try {
       await axios.post('http://localhost:5037/api/User', userData);
-      
-      showNotification('Cadastro realizado com sucesso!', 'success'); 
-      
-      
+      showNotification('Cadastro realizado com sucesso!', 'success');
+
       setTimeout(() => {
-        onNavigateToLogin();
-      }, 2000); 
+        navigate('/login');
+      }, 2000);
 
     } catch (error) {
       console.error('Erro ao cadastrar:', error);
       const errorMessage = error.response?.data?.message || 'Ocorreu um erro ao realizar o cadastro.';
-      showNotification(errorMessage, 'error'); 
+      showNotification(errorMessage, 'error');
     }
-};
+  };
 
-   return (
+  return (
     <div className="cadastro-container">
-       {/* RENDERIZAÇÃO CONDICIONAL DA NOTIFICAÇÃO */}
       {notification.message && (
         <div className={`notification ${notification.type}`}>
           {notification.message}
         </div>
       )}
       <header className="cadastro-header">
-        <button onClick={onNavigateToLogin} className="back-button">
+        <button onClick={() => navigate('/login')} className="back-button">
           <FaArrowLeft /> Voltar
         </button>
         <div className="title-bar">
@@ -93,7 +84,6 @@ const Cadastro = ({ onNavigateToLogin }) => {
       </header>
 
       <main className="cadastro-main">
-        
         <form className="cadastro-form" onSubmit={handleSubmit}>
           <div className="input-group">
             <label htmlFor="name">Nome</label>
@@ -105,18 +95,16 @@ const Cadastro = ({ onNavigateToLogin }) => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-
           <div className="input-group">
             <label htmlFor="email">E-mail</label>
             <input
               type="email"
               id="email"
               placeholder="E-mail"
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-
           <div className="input-group">
             <label htmlFor="password">Senha</label>
             <div className="password-wrapper">
@@ -124,15 +112,14 @@ const Cadastro = ({ onNavigateToLogin }) => {
                 type={passwordShown ? 'text' : 'password'}
                 id="password"
                 placeholder="Senha"
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <span onClick={() => setPasswordShown(!passwordShown)} className="password-toggle-icon">
                 {passwordShown ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
           </div>
-
           <div className="input-group">
             <label htmlFor="confirm-password">Confirmar senha</label>
             <div className="password-wrapper">
@@ -140,15 +127,14 @@ const Cadastro = ({ onNavigateToLogin }) => {
                 type={confirmPasswordShown ? 'text' : 'password'}
                 id="confirm-password"
                 placeholder="Confirmar senha"
-                value={confirmPassword} 
-                onChange={(e) => setConfirmPassword(e.target.value)} 
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <span onClick={() => setConfirmPasswordShown(!confirmPasswordShown)} className="password-toggle-icon">
                 {confirmPasswordShown ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
           </div>
-
           <button type="submit" className="cadastro-button">
             Cadastrar
           </button>

@@ -1,15 +1,26 @@
+// src/pages/Nivel/Nivel.js
+
 import React from 'react';
-import { FaArrowLeft, FaCog } from 'react-icons/fa';
+import { FaCog } from 'react-icons/fa'; 
+import { useNavigate } from 'react-router-dom';
 import './Nivel.css';
 
-const Nivel = ({ onNavigateToLogin, onNavigateToPerfil, onNavigateToAno }) => {
+const Nivel = () => {
+  const navigate = useNavigate();
+
+  const handleNivelSelect = (nivelUrl) => {
+    navigate(`/selecionar-ano/${nivelUrl}`);
+  };
+
+  const handleNavigateToPerfil = () => {
+    navigate('/perfil');
+  };
+
+
   return (
-    <div className="container">
+    <div className="container-nivel">
       <header className="nivel-header">
-        <button onClick={onNavigateToLogin} className="nav-button">
-          <FaArrowLeft /> Voltar
-        </button>
-        <button onClick={onNavigateToPerfil} className="nav-button">
+        <button onClick={handleNavigateToPerfil} className="nav-button">
           <FaCog />
         </button>
       </header>
@@ -19,9 +30,9 @@ const Nivel = ({ onNavigateToLogin, onNavigateToPerfil, onNavigateToAno }) => {
       </div>
 
       <main className="nivel-main">
-        <button className="nivel-button">Nível 2</button>
-        <button className="nivel-button">Nível 1</button>
-        <button onClick={onNavigateToAno} className="nivel-button">Nível Júnior</button>
+        <button onClick={() => handleNivelSelect('nivel-2')} className="nivel-button">Nível 2</button>
+        <button onClick={() => handleNivelSelect('nivel-1')} className="nivel-button">Nível 1</button>
+        <button onClick={() => handleNivelSelect('junior')} className="nivel-button">Nível Júnior</button>
       </main>
     </div>
   );

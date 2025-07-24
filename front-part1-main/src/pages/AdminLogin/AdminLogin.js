@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { IoPersonCircleOutline } from 'react-icons/io5';
+import { FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import './Login.css';
-import logo from './obi-simulator-logo.png';
+import './AdminLogin.css';
+import logo from '../Login/obi-simulator-logo.png'; 
 import { jwtDecode } from 'jwt-decode';
 
-const Login = () => {
+const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [passwordShown, setPasswordShown] = useState(false);
@@ -20,63 +19,65 @@ const Login = () => {
     setPasswordShown(!passwordShown);
   };
 
-  const handleLogin = async (event) => {
+  const handleAdminLogin = async (event) => {
     event.preventDefault();
     setError('');
-
     if (!email || !senha) {
       setError('PREENCHA OS CAMPOS DE E-MAIL E SENHA!');
       return;
     }
-
     setLoading(true);
 
     try {
+      // Usando o endpoint de login. 
       const response = await axios.post(
-        'http://localhost:5037/Login/login',
+        'http://localhost:5037/Login/login', 
         {
           Email: email,
-          Password: senha,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          Password: senha, 
         }
       );
 
       const { token } = response.data;
-      localStorage.setItem('authToken', token);
-
       const decoded = jwtDecode(token);
-      const userId = decoded.nameid || decoded.id || decoded.sub;
-      localStorage.setItem('userId', userId);
 
-      navigate('/selecionar-nivel');
+      if (decoded.role === 'Admin') {
+        // Se for Admin, continua o fluxo normal
+        const adminId = decoded.nameid || decoded.id; 
+        localStorage.setItem('adminAuthToken', token);
+        localStorage.setItem('adminId', adminId);
+
+        navigate('/admin/dashboard'); 
+      } else {
+        // Se NÃO for Admin, bloqueia o acesso e mostra um erro
+        setError('Acesso negado. Esta área é restrita para administradores.');
+      }
+      // ===============================================
 
     } catch (err) {
-      console.error('Erro no login:', err);
-      if (err.response) {
-        setError(err.response.data?.error || 'E-MAIL OU SENHA INVÁLIDOS');
-      } else if (err.request) {
-        setError('NÃO FOI POSSÍVEL SE CONECTAR AO SERVIDOR. VERIFIQUE SUA CONEXÃO.');
-      } else {
-        setError('ERRO INESPERADO. TENTE NOVAMENTE...');
-      }
+      console.error('Erro no login de admin:', err);
+      setError('CREDENCIAS DE ADMINISTRADOR INVÁLIDAS');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="login-container">
+    <div className="admin-login-container">
+      <header className="admin-login-header">
+        <button onClick={() => navigate('/login')} className="back-button">
+            <FaArrowLeft /> Voltar para Login Principal
+        </button>
+      </header>
+
       <div className="login-box">
         <div className="logo-container">
           <img src={logo} alt="OBI Simulator Logo" className="logo" />
+          <h1 className="admin-title">LOGIN ADMINISTRATIVO</h1>
         </div>
-        <form className="login-form" onSubmit={handleLogin}>
+        <form className="login-form" onSubmit={handleAdminLogin}>
           <div className="input-group">
-            <label htmlFor="email">E-mail</label>
+            <label htmlFor="email">E-mail de Administrador</label>
             <input
               type="email"
               id="email"
@@ -109,19 +110,9 @@ const Login = () => {
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
-        <div className="signup-link">
-          <button onClick={() => navigate('/cadastro')} className="link-button" disabled={loading}>
-            <IoPersonCircleOutline className="signup-icon" />
-            Cadastre-se
-          </button>
-        </div>
       </div>
-      
-      <button onClick={() => navigate('/admin/login')} className="admin-button" disabled={loading}>
-        Admin
-      </button>
     </div>
   );
 };
 
-export default Login;
+export default AdminLogin;

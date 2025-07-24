@@ -2,10 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Perfil.css';
 import { FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom'; 
+import './Perfil.css';
 
-export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSenha, onNavigateToRelatorio, onNavigateBack,onNavigateToLogin  }) {
+
+export default function Perfil() {
+
+    const navigate = useNavigate();
 
     const [user, setUser] = useState({
         name: '',
@@ -21,14 +25,14 @@ export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSen
             try {
                 const userId = localStorage.getItem('userId');
                 const token = localStorage.getItem('authToken');
-                console.log('userId:', userId);
-                console.log('token:', token);
+                if (!token || !userId) {
+                    navigate('/login');
+                    return;
+                }
                 const response = await axios.get(
                     `http://localhost:5037/api/User/${userId}`,
                     {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     }
                 );
                 setUser({
@@ -36,38 +40,41 @@ export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSen
                     email: response.data.email
                 });
             } catch (err) {
-                console.error(err); // Veja o erro completo no console
+                console.error(err);
                 setError('Erro ao buscar usuário');
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    localStorage.clear();
+                    navigate('/login');
+                }
             } finally {
                 setLoading(false);
             }
         };
         fetchUser();
-    }, []);
+    }, [navigate]); 
 
-       const handleLogout = () => {
-        // Limpa os dados do usuário do navegador
+   
+
+    const handleLogout = () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userId');
-
-        // Chama a função que te leva direto para a tela de login
-        if (onNavigateToLogin) {
-            onNavigateToLogin();
-        }
+        // Navega para a rota de login
+        navigate('/login');
     };
 
-    const goToChangeName = () => onNavigateToAlterarNome && onNavigateToAlterarNome();
-    const goToChangePassword = () => onNavigateToAlterarSenha && onNavigateToAlterarSenha();
-    const goToReport = () => onNavigateToRelatorio && onNavigateToRelatorio();
-    const handleBack = () => onNavigateBack && onNavigateBack();
+    const goToChangeName = () => navigate('/perfil/alterar-nome');
+    const goToChangePassword = () => navigate('/perfil/alterar-senha');
+    const goToReport = () => navigate('/perfil/relatorio');
+    
+    const handleBack = () => navigate('/selecionar-nivel');
 
     return (
         <div className="body">
             <div className="header-superior">
-         <button className="voltar" onClick={handleBack}>
-        <FaArrowLeft /> Voltar
-        </button>
-</div>
+                <button className="voltar" onClick={handleBack}>
+                    <FaArrowLeft /> Voltar
+                </button>
+            </div>
 
             <div className="titulo-container">
                 <div className="titulo">PERFIL</div>
@@ -86,7 +93,7 @@ export default function Perfil({ onNavigateToAlterarNome, onNavigateToAlterarSen
                             <button onClick={goToChangeName}>Alterar nome</button>
                             <button onClick={goToChangePassword}>Alterar senha</button>
                             <button onClick={goToReport}>Relatório</button>
-                            <button onClick={handleLogout}>Sair</button>
+                            <button onClick={handleLogout} className="botao-sair">Sair</button>
                         </div>
                     </>
                 )}

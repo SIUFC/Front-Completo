@@ -1,114 +1,49 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login/Login';
 import Cadastro from './pages/Cadastro/Cadastro';
 import Nivel from './pages/Nivel/Nivel';
-import Ano from './pages/Nivel/Junior/Ano';
-import Fase from './pages/Nivel/Junior/2021/Fase';
-import Questao1 from './pages/Nivel/Junior/2021/Questões/Questao1';
+import Ano from './pages/Ano/Ano';
+import Fase from './pages/Fase/Fase';
+import Prova from './pages/Prova/Prova';
 import Perfil from './pages/Perfil/Perfil';
 import AlterarNome from './pages/Perfil/AlterarNome/AlterarNome';
 import AlterarSenha from './pages/Perfil/AlterarSenha/AlterarSenha';
 import Relatorio from './pages/Perfil/Relatorio/Relatorio';
-
+import RelatorioQuestoes from './pages/RelatorioQuestoes/RelatorioQuestoes';
+import AdminLogin from './pages/AdminLogin/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard/AdminDashboard'; 
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState('login');
+  return (
+    <div className="App">
+      <Routes>
+        {/* === Rotas de Autenticação e Acesso Inicial === */}
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<Cadastro />} />
 
-  const navigateToCadastro = () => setCurrentScreen('cadastro');
-  const navigateToLogin = () => setCurrentScreen('login');
-  const navigateToNivel = () => setCurrentScreen('nivel');
-  const navigateToAno = () => setCurrentScreen('ano');
-  const navigateToFase = () => setCurrentScreen('fase');
-  const navigateToQuestao1 = () => setCurrentScreen('questao1');
-  const navigateToPerfil = () => setCurrentScreen('perfil');
-  const navigateToAlterarNome = () => setCurrentScreen('alterarNome');
-  const navigateToAlterarSenha = () => setCurrentScreen('alterarSenha');
-  const navigateToRelatorio = () => setCurrentScreen('relatorio');
+        {/* === Fluxo Principal do Quiz (Seleção de Prova) === */}
+        <Route path="/selecionar-nivel" element={<Nivel />} />
+        <Route path="/selecionar-ano/:nivel" element={<Ano />} />
+        <Route path="/selecionar-fase/:nivel/:ano" element={<Fase />} />
+        <Route path="/prova/:nivel/:ano/:fase" element={<Prova />} />
+        
+        {/* Rota para a tela de resultado após a prova */}
+        <Route path="/relatorio-questoes" element={<RelatorioQuestoes />} />
 
-  const renderScreen = () => {
-    switch (currentScreen) {
-      case 'cadastro':
-        return <Cadastro onNavigateToLogin={navigateToLogin} />;
+        {/* === Rotas do Perfil do Usuário === */}
+        <Route path="/perfil" element={<Perfil />} />
+        <Route path="/perfil/alterar-nome" element={<AlterarNome />} />
+        <Route path="/perfil/alterar-senha" element={<AlterarSenha />} />
+        <Route path="/perfil/relatorio" element={<Relatorio />} />
 
-      case 'nivel':
-        return (
-          <Nivel
-            onNavigateToLogin={navigateToLogin}
-            onNavigateToAno={navigateToAno}
-            onNavigateToPerfil={navigateToPerfil}
-          />
-        );
-
-      case 'ano':
-        return (
-          <Ano
-            onNavigateBack={() => setCurrentScreen('nivel')}
-            onNavigateToFase={navigateToFase}
-            onNavigateToPerfil={navigateToPerfil}
-          />
-        );
-
-      case 'fase':
-        return (
-          <Fase
-            onNavigateBack={() => setCurrentScreen('ano')}
-            onNavigateToPerfil={navigateToPerfil}
-            onNavigateToQuestao={navigateToQuestao1}
-          />
-        );
-
-      case 'perfil':
-        return (
-          <Perfil
-            onNavigateToAlterarNome={navigateToAlterarNome}
-            onNavigateToAlterarSenha={navigateToAlterarSenha}
-            onNavigateToRelatorio={navigateToRelatorio}
-            onNavigateBack={() => setCurrentScreen('fase')}
-             onNavigateToLogin={navigateToLogin}
-          />
-        );
-
-      case 'alterarNome':
-        return (
-          <AlterarNome
-            onNavigateBack={navigateToPerfil}
-          />
-        );
-
-      case 'alterarSenha':
-        return (
-          <AlterarSenha
-            onNavigateBack={navigateToPerfil}
-          />
-        );
-
-      case 'relatorio':
-        return (
-          <Relatorio
-            onNavigateBack={navigateToPerfil}
-          />
-        );
-
-      case 'questao1':
-        return (
-          <Questao1 
-            onNavigateBack={() => setCurrentScreen('fase')}
-            onNavigateToPerfil={navigateToPerfil}
-          />
-        );
-
-      case 'login':
-      default:
-        return (
-          <Login
-            onNavigateToCadastro={navigateToCadastro}
-            onNavigateToNivel={navigateToNivel}
-          />
-        );
-    }
-  };
-
-  return <div className="App">{renderScreen()}</div>;
+        {/* === Rotas da Área Administrativa === */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      </Routes>
+    </div>
+  );
 }
 
 export default App;
