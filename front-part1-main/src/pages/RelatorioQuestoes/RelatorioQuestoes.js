@@ -1,7 +1,7 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './RelatorioQuestoes.css';
 
 const RelatorioQuestoes = () => {
@@ -10,9 +10,53 @@ const RelatorioQuestoes = () => {
     
     const relatorio = location.state?.relatorio;
 
-    
+    useEffect(() => {
+        const salvarRelatorio = async () => {
+            if (relatorio) {
+                const token = localStorage.getItem('authToken');
+                const userId = localStorage.getItem('userId'); 
+
+                if (!token || !userId) {
+                    console.error('Token ou ID do usuário não encontrado. Não foi possível salvar o resultado.');
+                    return;
+                }
+
+                const dadosParaSalvar = {
+                    totalCorrect: relatorio.acertos,
+                    totalIncorrect: relatorio.totalQuestoes - relatorio.acertos,
+                };
+                
+                const url = `http://localhost:5037/api/quiz/save-result/${userId}`; 
+
+                try {
+                    const response = await axios.post(url, dadosParaSalvar, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    console.log('Relatório salvo com sucesso no banco de dados!', response.data);
+
+                } catch (error) {
+                    if (error.response) {
+                        console.error('Falha ao salvar o relatório:', error.response.status, error.response.data);
+                        if (error.response.status === 403) {
+                            alert("Acesso negado. A verificação de segurança falhou.");
+                        }
+                    } else if (error.request) {
+                        console.error('Erro de rede: Nenhuma resposta do servidor.', error.request);
+                    } else {
+                        console.error('Erro ao configurar a requisição:', error.message);
+                    }
+                }
+            }
+        };
+
+        salvarRelatorio();
+        
+    }, [relatorio]);
+
     const handleRecomecar = () => {
-     
         navigate(-1); 
     };
 
@@ -59,11 +103,11 @@ const RelatorioQuestoes = () => {
                 <div className="lista-respostas">
                     {relatorio.detalhes.map((item) => (
                          <div key={item.numero} className="item-resposta">
-        <span className="resposta-usuario">{item.numero}) Sua resposta: {item.suaResposta}</span>
-        <span className={`feedback-texto ${item.acertou ? 'feedback-correta' : 'feedback-errada'}`}>
-    {item.acertou ? '(CORRETA)' : '(ERRADA)'}
-</span>
-    </div>
+                            <span className="resposta-usuario">{item.numero} Sua resposta: {item.suaResposta}</span>
+                            <span className={`feedback-texto ${item.acertou ? 'feedback-correta' : 'feedback-errada'}`}>
+                                {item.acertou ? '(CORRETA)' : '(ERRADA)'}
+                            </span>
+                        </div>
                     ))}
                 </div>
 
