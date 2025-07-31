@@ -3,12 +3,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import './Cadastro.css';
 
-
 const Cadastro = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -37,11 +36,17 @@ const Cadastro = () => {
     event.preventDefault();
 
     if (!name || !email || !password || !confirmPassword) {
-      showNotification('Por favor, preencha todos os campos.', 'error');
+      showNotification('Por favor, preencha todos os campos', 'error');
       return;
     }
+
+    if (password.length < 8) {
+      showNotification('A senha deve ter no mínimo 8 caracteres', 'error');
+      return;
+    }
+
     if (password !== confirmPassword) {
-      showNotification('As senhas não coincidem!', 'error');
+      showNotification('As senhas não coincidem', 'error');
       return;
     }
 
@@ -114,6 +119,8 @@ const Cadastro = () => {
                 placeholder="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                minLength="8"
+                required
               />
               <span onClick={() => setPasswordShown(!passwordShown)} className="password-toggle-icon">
                 {passwordShown ? <FaEyeSlash /> : <FaEye />}
@@ -129,6 +136,8 @@ const Cadastro = () => {
                 placeholder="Confirmar senha"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                minLength="8"
+                required
               />
               <span onClick={() => setConfirmPasswordShown(!confirmPasswordShown)} className="password-toggle-icon">
                 {confirmPasswordShown ? <FaEyeSlash /> : <FaEye />}
