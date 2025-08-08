@@ -33,7 +33,11 @@ const Cadastro = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
- 
+    if (/\s/.test(password) || /\s/.test(confirmPassword)) {
+      showNotification('A senha não pode conter espaços.', 'error');
+      return;
+    }
+
     if (!name.trim() || !email || !password || !confirmPassword) {
       showNotification('Por favor, preencha todos os campos.', 'error');
       return;
@@ -117,7 +121,7 @@ const Cadastro = () => {
                 id="password"
                 placeholder="Mínimo de 8 caracteres"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value.replace(/\s/g, ''))}
               />
               <span onClick={() => setPasswordShown(!passwordShown)} className="password-toggle-icon">
                 {passwordShown ? <FaEyeSlash /> : <FaEye />}
@@ -132,7 +136,7 @@ const Cadastro = () => {
                 id="confirm-password"
                 placeholder="Confirmar senha"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) => setConfirmPassword(e.target.value.replace(/\s/g, ''))}
               />
               <span onClick={() => setConfirmPasswordShown(!confirmPasswordShown)} className="password-toggle-icon">
                 {confirmPasswordShown ? <FaEyeSlash /> : <FaEye />}
